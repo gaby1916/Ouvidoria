@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Crie sua conta</h2>
+{% if error %}
+<p class="error">{{ error }}</p>
+{% endif %}
+<form method="POST">
+    <label>Nome:</label>
+    <input name="name" required>
+    <label>Email:</label>
+    <input name="email" type="email" required>
+    <label>Senha:</label>
+    <input name="password" type="password" required>
+    <label>Telefone:</label>
+    <input name="phone">
+    <label>CPF:</label>
+    <input name="cpf">
+    <button type="submit">Registrar</button>
+</form>
+<p style="text-align:center;"><a href="{{ url_for('login') }}">Já possui conta? Faça login</a></p>
+<p style="text-align:center;"><a href="/api/logout">Voltar para home</a></p>
+{% endblock %}

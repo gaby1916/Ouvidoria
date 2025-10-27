@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Nova mensagem à Ouvidoria</h2>
+<form method="POST">
+    <label>Assunto:</label>
+    <input type="text" name="subject" required>
+    <label>Mensagem:</label>
+    <textarea name="body" rows="5" required></textarea>
+    <button type="submit">Enviar</button>
+</form>
+<p style="text-align:center;"><a href="{{ url_for('dashboard') }}">← Voltar ao painel</a></p>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Editar Perfil</h2>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<form method="POST">
+    <label>Nome:</label>
+    <input name="name" value="{{ user['name'] if user else '' }}" required>
+    <label>Email (não editável):</label>
+    <input name="email" value="{{ user['email'] if user else '' }}" disabled>
+    <label>Telefone:</label>
+    <input name="phone" value="{{ user['phone'] if user else '' }}">
+    <label>CPF:</label>
+    <input name="cpf" value="{{ user['cpf'] if user else '' }}">
+    <label>Nova senha (opcional):</label>
+    <input type="password" name="password">
+    <button type="submit">Salvar alterações</button>
+</form>
+
+<hr>
+<form method="POST" action="{{ url_for('delete_account') }}"
+    onsubmit="return confirm('Tem certeza que deseja excluir sua conta? Essa ação não poderá ser desfeita.');">
+    <button type="submit" style="background:#d9534f;">Excluir Conta</button>
+</form>
+
+<p style="text-align:center;"><a href="{{ url_for('dashboard') }}">← Voltar ao painel</a></p>
+{% endblock %}

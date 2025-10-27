@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% block body_class %}admin-theme{% endblock %}
+{% block content %}
+
+<style>
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #1e1e2f;
+        color: #f5f5f5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    main {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 40px 20px;
+        box-sizing: border-box;
+        background-color: #1e1e2f;
+    }
+
+    .panel-container {
+        width: 90%;
+        max-width: 1200px;
+        /* Aumentei para caber 3 colunas */
+        background-color: #2a2a40;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        margin: 0 auto;
+    }
+
+    h2,
+    h3 {
+        color: #ffffff;
+        margin-top: 0;
+        text-align: center;
+    }
+
+    .stat {
+        margin-bottom: 20px;
+        font-size: 1.1em;
+        text-align: center;
+    }
+
+    .users-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        /* 3 colunas iguais */
+        gap: 15px;
+        /* Espaço entre os cards */
+        margin-bottom: 30px;
+    }
+
+    .user-card {
+        background-color: #3a3a55;
+        padding: 15px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        height: fit-content;
+        min-height: 120px;
+        /* Altura mínima consistente */
+    }
+
+    .user-info {
+        flex: 1;
+        margin-bottom: 10px;
+    }
+
+    .user-name {
+        font-weight: bold;
+        font-size: 1em;
+        margin-bottom: 5px;
+        color: #ffffff;
+    }
+
+    .user-email {
+        color: #cccccc;
+        font-size: 0.85em;
+        margin-bottom: 5px;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .user-id {
+        color: #aaaaaa;
+        font-size: 0.8em;
+    }
+
+    .delete-btn {
+        background-color: #e74c3c;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 0.9em;
+        width: 100%;
+        margin-top: auto;
+        /* Empurra o botão para baixo */
+    }
+
+    .delete-btn:hover {
+        background-color: #c0392b;
+    }
+
+    .logout-btn {
+        background-color: #c0392b;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        color: white;
+        font-size: 1em;
+        margin-top: 30px;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .logout-btn:hover {
+        background-color: #a83224;
+    }
+
+    footer {
+        display: none;
+    }
+
+    /* Responsividade */
+    @media (max-width: 1024px) {
+        .users-grid {
+            grid-template-columns: repeat(2, 1fr);
+            /* 2 colunas em tablets */
+        }
+    }
+
+    @media (max-width: 768px) {
+        .users-grid {
+            grid-template-columns: 1fr;
+            /* 1 coluna em mobile */
+        }
+
+        .panel-container {
+            width: 95%;
+            padding: 20px 15px;
+        }
+    }
+</style>
+
+<main>
+    <div class="panel-container">
+        <h2>Painel Administrativo</h2>
+
+        <p class="stat">👥 Total de usuários: <strong>{{ total_users }}</strong></p>
+        <p class="stat">📩 Total de mensagens: <strong>{{ total_messages }}</strong></p>
+
+        <h3>Usuários cadastrados:</h3></br>
+
+        <div class="users-grid">
+            {% for user in users %}
+            <div class="user-card">
+                <div class="user-info">
+                    <div class="user-name">{{ user.name }}</div>
+                    <div class="user-email">{{ user.email }}</div>
+                    <div class="user-id">ID: {{ user.id }}</div>
+                </div>
+                <form method="POST" action="{{ url_for('admin_delete_user', user_id=user.id) }}"
+                    onsubmit="return confirm('Deseja deletar o usuário {{ user.name }}?');">
+                    <button type="submit" class="delete-btn">🗑️ Excluir</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div style="text-align: center;">
+            <a href="/api/logout" class="logout-btn">Sair</a>
+        </div>
+    </div>
+</main>
+{% endblock %}

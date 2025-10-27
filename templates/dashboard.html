@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Bem-vindo(a), {{ name }}!</h2></br>
+
+<div style="text-align:center; margin-bottom:20px;">
+    <a href="{{ url_for('ouvidoria') }}"><button>Nova Mensagem</button></a>
+    <a href="{{ url_for('edit_profile') }}"><button style="background-color:#008CBA;">Editar Perfil</button></a>
+    <a href="/api/logout"><button style="background-color:#a71111;">Sair</button></a>
+</div>
+
+{% if messages %}
+<h3>Suas mensagens:</h3>
+<ul style="list-style:none; padding:0;">
+    {% for msg in messages %}
+    <li style="background:#f2f2f2; border-radius:8px; margin:10px 0; padding:10px;">
+        <strong>{{ msg['subject'] }}</strong>
+        <div style="float:right; font-size:0.9rem; color:#666;">{{ msg['created_at'] }}</div>
+        <div style="clear:both;"></div>
+        <p>{{ msg['body'] }}</p>
+        <div style="text-align:right;">
+            <form method="POST" action="{{ url_for('delete_message', msg_id=msg['id']) }}" style="display:inline;">
+                <button type="submit" style="background-color:#d9534f;">Excluir</button>
+            </form>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p style="text-align:center; color:#777;">Você ainda não enviou nenhuma mensagem.</p>
+{% endif %}
+{% endblock %}
