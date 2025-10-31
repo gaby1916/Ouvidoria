@@ -10,59 +10,69 @@ def get_db():
     conn.execute('PRAGMA foreign_keys = ON')
     return conn
 
-schema = '''
-DROP TABLE IF EXISTS messages;
-DROP TABLE IF EXISTS users;
 
-CREATE TABLE users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    senha_md5 TEXT NOT NULL,
-    phone TEXT,
-    cpf TEXT,
-    role TEXT DEFAULT 'user' -- ADICIONADO
-);
+def init_db():
+    # Cria o arquivo do banco apenas se ele ainda não existir
+    create_schema = not os.path.exists(DB)
 
-CREATE TABLE messages (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    subject TEXT,
-    body TEXT,
-    created_at TEXT,
-    FOREIGN KEY(user_id) REFERENCES users(id)
-);
-'''
+    conn = sqlite3.connect(DB)
+    c = conn.cursor()
 
-conn = sqlite3.connect(DB)
-c = conn.cursor()
-c.executescript(schema)
+    if create_schema:
+        print("Criando novo banco de dados...")
+        c.executescript('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            senha_md5 TEXT NOT NULL,
+            phone TEXT,
+            cpf TEXT,
+            role TEXT DEFAULT 'user'
+        );
 
-users = [
-    ('Alice Silva', 'alice@gmail.com', 'password123', '(93)99177-9966', '939.713.414-03', 'user'),
-    ('Bruno Costa', 'bruno@example.com', '12345678', '(93)99187-3576', '156.398.024-05', 'user'),
-    ('Carla Souza', 'carla@icloud.com', 'senhafoda', '(93)99155-4433', '752.198.654-71', 'user'),
-]
+        CREATE TABLE IF NOT EXISTS messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            subject TEXT,
+            body TEXT,
+            created_at TEXT,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        );
+        ''')
 
-for name, email, pw, phone, cpf, role in users:
-    h = hashlib.md5(pw.encode()).hexdigest()
-    c.execute(
-        'INSERT OR IGNORE INTO users (name,email,senha_md5,phone,cpf,role) VALUES (?,?,?,?,?,?)',
-        (name, email, h, phone, cpf, role)
-    )
+        # Inserir dados iniciais apenas na primeira criação
+        users = [
+            ('Alice Silva', 'alice@gmail.com', 'password123', '(93)99177-9966', '939.713.414-03', 'user'),
+            ('Bruno Costa', 'bruno@example.com', '12345678', '(93)99187-3576', '156.398.024-05', 'user'),
+            ('Carla Souza', 'carla@icloud.com', 'senhafoda', '(93)99155-4433', '752.198.654-71', 'user'),
+        ]
 
-messages = [
-    (1, 'Elogio', 'Ótimo atendimento!', '2025-10-10 10:00:00'),
-    (2, 'Reclamação', 'Demora no retorno', '2025-10-09 09:30:00'),
-]
+        for name, email, pw, phone, cpf, role in users:
+            h = hashlib.md5(pw.encode()).hexdigest()
+            c.execute(
+                'INSERT INTO users (name,email,senha_md5,phone,cpf,role) VALUES (?,?,?,?,?,?)',
+                (name, email, h, phone, cpf, role)
+            )
 
-for user_id, subject, body, created_at in messages:
-    c.execute(
-        'INSERT INTO messages (user_id,subject,body,created_at) VALUES (?,?,?,?)',
-        (user_id, subject, body, created_at)
-    )
+        messages = [
+            (1, 'Elogio', 'Ótimo atendimento!', '2025-10-10 10:00:00'),
+            (2, 'Reclamação', 'Demora no retorno', '2025-10-09 09:30:00'),
+        ]
 
-conn.commit()
-conn.close()
+        for user_id, subject, body, created_at in messages:
+            c.execute(
+                'INSERT INTO messages (user_id,subject,body,created_at) VALUES (?,?,?,?)',
+                (user_id, subject, body, created_at)
+            )
 
-print('Banco inicializado: ouvidoria.db')
+        print("Banco inicializado com dados de exemplo.")
+    else:
+        print("Banco já existente. Mantendo os dados atuais.")
+
+    conn.commit()
+    conn.close()
+
+
+if __name__ == '__main__':
+    init_db()
