@@ -14,7 +14,7 @@ python3 -m venv /root/Ouvidoria (ou o caminho exato onde tenha feito a clonagem 
 
 4 - Ative o ambiente virtual com:
 
-cd bin && source activate
+cd bin && source activate && cd ..
 
 5 - Instale os requisitos necessários com:
 
