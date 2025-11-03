@@ -12,7 +12,6 @@ def get_db():
 
 
 def init_db():
-    # Cria o arquivo do banco apenas se ele ainda não existir
     create_schema = not os.path.exists(DB)
 
     conn = sqlite3.connect(DB)
@@ -41,7 +40,6 @@ def init_db():
         );
         ''')
 
-        # Inserir dados iniciais apenas na primeira criação
         users = [
             ('Alice Silva', 'alice@gmail.com', 'password123', '(93)99177-9966', '939.713.414-03', 'user'),
             ('Bruno Costa', 'bruno@example.com', '12345678', '(93)99187-3576', '156.398.024-05', 'user'),
