@@ -108,7 +108,7 @@ def ouvidoria():
         c = conn.cursor()
         c.execute(
             'INSERT INTO messages (user_id,subject,body,created_at) VALUES (?,?,?,?)',
-            (user_id, subject, body, datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
+            (user_id, subject, body, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
         conn.commit()
         conn.close()
@@ -199,7 +199,7 @@ def logout():
     session.clear()
     return redirect(url_for('home'))
 
-@app.route('/api/users')
+@app.route('/api/users', strict_slashes=False)
 def api_users():
     if not is_logged_in():
         return render_template('admin_unauthorized.html'), 401
@@ -211,7 +211,7 @@ def api_users():
     conn.close()
     return jsonify(users)
 
-@app.route('/api/messages')
+@app.route('/api/messages', strict_slashes=False)
 def api_messages():
     if not is_logged_in():
        return render_template('admin_unauthorized.html'), 401
