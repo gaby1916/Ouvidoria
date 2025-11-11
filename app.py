@@ -60,15 +60,25 @@ def register():
         phone = request.form.get('phone', '').strip()
         cpf = request.form.get('cpf', '').strip()
         senha_md5 = hashlib.md5(password.encode()).hexdigest()
+
         conn = get_db()
         c = conn.cursor()
-        c.execute('INSERT INTO users (name, email, senha_md5, phone, cpf, role) VALUES (?, ?, ?, ?, ?, ?)',
-                  (name, email, senha_md5, phone, cpf, 'user'))
+        c.execute("SELECT 1 FROM users WHERE email = ?", (email,))
+        if c.fetchone():
+            conn.close()
+            flash('E-mail já cadastrado!')
+            return redirect(url_for('register'))
+
+        c.execute(
+            'INSERT INTO users (name, email, senha_md5, phone, cpf, role) VALUES (?, ?, ?, ?, ?, ?)',
+            (name, email, senha_md5, phone, cpf, 'user')
+        )
         conn.commit()
         conn.close()
         flash('Usuário cadastrado com sucesso!')
         return redirect(url_for('login'))
     return render_template('register.html', logged_in=is_logged_in(), is_admin=is_admin_session())
+
 
 @app.route('/api/dashboard')
 def dashboard():
