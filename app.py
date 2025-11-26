@@ -102,9 +102,6 @@ def ouvidoria():
     if request.method == 'POST':
         subject = request.form.get('subject', '')
         body = request.form.get('body', '')
-        # VULNERABILIDADE INTENCIONAL: aceita um field user_id no form.
-        # Se user_id fornecido, usaremos aquele ID sem verificar se o session user tem permissão.
-        # Isso demonstra como passar ID no body pode permitir ação em outra conta.
         victim_user_id = request.form.get('user_id')
         if victim_user_id:
             try:
@@ -144,8 +141,6 @@ def edit_profile():
     conn = get_db()
     c = conn.cursor()
     if request.method == 'POST':
-        # VULNERABILIDADE INTENCIONAL: se o corpo contiver user_id, ele será usado sem checar privilégios.
-        # Isso permite alterar o perfil de outro usuário se o atacante fornecer user_id.
         target_id = request.form.get('user_id')
         if target_id:
             try:
@@ -183,8 +178,6 @@ def edit_profile():
 def delete_account():
     if not is_logged_in():
         return redirect(url_for('login'))
-    # VULNERABILIDADE INTENCIONAL: se o corpo contiver user_id, ele será usado sem checar privilégios.
-    # Isso permite deletar o perfil de outro usuário
     target_id = request.form.get('user_id')
     if target_id:
         try:
