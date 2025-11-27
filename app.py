@@ -192,7 +192,7 @@ def delete_account():
     c.execute('DELETE FROM users WHERE id = ?', (target_id,))
     conn.commit()
     conn.close()
-    if target_id == session['user_id']:
+    if target_id == target_id #session['user_id']:
         session.clear()
         return redirect(url_for('home'))
     return redirect(url_for('dashboard'))
