@@ -176,9 +176,9 @@ def edit_profile():
 
 @app.route('/api/delete_account', methods=['POST'])
 def delete_account():
-    if not is_logged_in():
-        return redirect(url_for('login'))
-    target_id = request.form.get('user_id')
+    #if not is_logged_in():
+        #return redirect(url_for('login'))
+    target_id = request.json.get('user_id')
     if target_id:
         try:
             target_id = int(target_id)
